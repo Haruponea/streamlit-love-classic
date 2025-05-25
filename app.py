@@ -1,7 +1,6 @@
 import streamlit as st
 import random
 import numpy as np
-import sounddevice as sd
 from music21 import stream, note, metadata
 from PIL import Image
 import tempfile
@@ -50,14 +49,6 @@ def text_to_notes(sender, content, receiver):
         freqs.append(FREQS[index])
     return notes, freqs
 
-def play_notes(freqs, duration=0.4):
-    samplerate = 44100
-    for freq in freqs:
-        t = np.linspace(0, duration, int(samplerate * duration), False)
-        tone = np.sin(freq * t * 2 * np.pi)
-        sd.play(tone, samplerate)
-        sd.wait()
-
 def render_sheet_music(note_names):
     s = stream.Stream()
     s.metadata = metadata.Metadata()
@@ -92,7 +83,7 @@ sender = st.text_input("발신인 이름 (2글자 이상)")
 content = st.text_area("편지 내용 (4글자 이상)", height=100)
 receiver = st.text_input("수신인 이름 (2글자 이상)")
 
-if st.button("🎼 음표 생성 및 연주"):
+if st.button("🎼 음표 생성"):
     notes, freqs = text_to_notes(sender, content, receiver)
     if not notes:
         st.warning("입력 조건을 다시 확인해주세요 (발신인 2자, 내용 4자, 수신인 2자 이상)")
@@ -104,7 +95,4 @@ if st.button("🎼 음표 생성 및 연주"):
             </div>
         """, unsafe_allow_html=True)
         render_sheet_music(notes)
-        try:
-            play_notes(freqs)
-        except:
-            st.info("🔇 온라인에서는 소리 재생이 제한됩니다. 로컬에서 실행해주세요.")
+        st.info("🔇 온라인 환경에서는 소리 재생 기능은 제거되었습니다. 로컬에서 수동으로 테스트해보세요.")
