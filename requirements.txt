@@ -1,4 +1,6 @@
 streamlit
-numpy
 music21
-Pillow
+pygame
+pdf2image
+pillow
+numpy
